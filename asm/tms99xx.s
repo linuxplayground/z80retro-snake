@@ -1,10 +1,13 @@
   .export _tms_mcinit
   .export _tms_w_addr
   .export _tms_r_addr
+  .export _tms_wait
   .export _tms_flushmc
 
 io_tmsdata     equ 0x80
 io_tmslatch    equ 0x81
+joy0           equ 0xa8
+joy1           equ 0xa9
 
 tms_pat        equ 0x0800
 tms_patLen     equ 0x0600
@@ -175,16 +178,28 @@ tms_wr_sl_l:
 ; CLOBBERS: AF, BC, DE, HL
 ;===============================================================================
 _tms_flushmc:
-  push bc
+  push  bc
   ; hl is the source data
-  ld  de,tms_pat
-  ld  bc,tms_patLen
+  ld    de,tms_pat
+  ld    bc,tms_patLen
 
-  ;call    tms_wait
-  call tms_wr_fast
-  pop bc
+  ;call tms_wait
+  call  tms_wr_fast
+  pop   bc
   ret
 
+;===============================================================================
+; Wait for the VDP VSYNC status to appear on the status register
+; INPUT: void
+; OUTPUT: void
+; CLOBBERS: AF
+;===============================================================================
+_tms_wait:
+  in    a,(joy0)        ; read the /INT status via bodge wire 
+  and   0x02            ; check U6, pin 4 (D1)
+  jp    nz,_tms_wait
+  in    a,(io_tmslatch) ; read the VDP status register to reset the IRQ
+  ret
 
 ;===============================================================================
 ; Multicolor Mode Registers
