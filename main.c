@@ -23,13 +23,14 @@ typedef struct s_point {
 } Point;
 
 typedef struct s_snake {
-  uint16_t head;
-  uint16_t tail;
-  uint8_t grow;
+  uint16_t head; // index into points for the head
+  uint16_t tail; // index into points for the tail
+  uint8_t grow;  // number of segments to grow by
 } Snake;
 
 Point points[0x600] = {{0}};
 char fb[0x600] = {0x11};
+Point apple = {0};
 
 Snake *init_snake() {
   Snake *snake;
@@ -91,20 +92,45 @@ bool draw_snake(Snake *snake) {
                      fb);
 }
 
+void new_apple() {
+  bool taken = true;
+  uint8_t x, y;
+  uint16_t offset;
+
+  while (taken) {
+    x = rand() % 64;
+    y = rand() % 48;
+    offset = y * 64 + x;
+    if (fb[offset] != 0x11) {
+      taken = false;
+      apple.x = x;
+      apple.y = y;
+      vmc_plot_xy(x, y, VDP_LIGHT_GREEN, fb);
+    }
+  }
+}
+
 int main() {
   char c;
   Snake *snake = init_snake();
 
-  running = true;
+  running = false;
   speed = SPEED;
 
   tms_mcinit();
-  zputs("Press a key to quit.\n");
-
-  while (!cstat())
-    ++seed;
-  c = chin();
+  zputs("Press SPACE to start, WASD to move, ESC to quit.\n");
+  
+  while (!running) {
+    seed ++;
+    if (cstat()) {
+      if(chin() == ' ')
+        running = true;
+    }
+  }
   srand(seed);
+
+  new_apple();
+  zputs("\"How do ya like dem apples?\"\n");
 
   while (running) {
     tms_wait();
@@ -120,13 +146,13 @@ int main() {
         dir = (dir != EAST) ? WEST : dir;
         break;
       case 's':
-        dir = (dir != NORTH) ? SOUTH: dir;
+        dir = (dir != NORTH) ? SOUTH : dir;
         break;
       case 'd':
-        dir = (dir != WEST) ? EAST: dir;
+        dir = (dir != WEST) ? EAST : dir;
         break;
       case 'w':
-        dir = (dir != SOUTH) ? NORTH: dir;
+        dir = (dir != SOUTH) ? NORTH : dir;
         break;
       default:
         break;
@@ -134,11 +160,22 @@ int main() {
     }
     if (speed == 0 && running) {
 
-      if (move_snake(snake))
+      if (move_snake(snake)) {
         running = false;
+        zputs("You crashed into a wall.\n");
+        break;
+      }
 
-      if (draw_snake(snake))
-        running = false;
+      if (draw_snake(snake)) {
+        if ((points[snake->head].x == apple.x) &&
+            (points[snake->head].y == apple.y)) {
+          snake->grow = 4;
+          new_apple();
+        } else {
+          zputs("You crashed into your tail.\n");
+          running = false;
+        }
+      }
 
       tms_flushmc(fb);
       speed = SPEED;
