@@ -28,7 +28,7 @@ typedef struct s_snake {
   uint8_t grow;  // number of segments to grow by
 } Snake;
 
-Point points[0x600] = {{0}};
+Point points[0x600];
 char fb[0x600] = {0x11};
 Point apple = {0};
 
@@ -100,8 +100,8 @@ void new_apple() {
   while (taken) {
     x = rand() % 64;
     y = rand() % 48;
-    offset = y * 64 + x;
-    if (fb[offset] != 0x11) {
+    offset = (y * 64) + x;
+    if (fb[offset] == 0x11) {
       taken = false;
       apple.x = x;
       apple.y = y;
@@ -110,9 +110,20 @@ void new_apple() {
   }
 }
 
+void *z80memset(void *dest, int data, uint16_t len)
+{
+	char *p = dest;
+	char v = (char)data;
+
+	while(len--)
+		*p++ = v;
+	return dest;
+}
+
 int main() {
   char c;
   Snake *snake = init_snake();
+  z80memset(fb, 0x11, 0x600);
 
   running = false;
   speed = SPEED;
