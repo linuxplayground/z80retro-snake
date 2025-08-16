@@ -2,7 +2,7 @@
 #include "ztty.h"
 #include "tms99xx.h"
 
-char fb[0x600] = {0};
+char fb[0x600] = {0x11};
 
 void greeter(char *name)
 {
