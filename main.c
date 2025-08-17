@@ -129,7 +129,7 @@ int main() {
   speed = SPEED;
 
   tms_mcinit();
-  zputs("Press SPACE to start, WASD to move, ESC to quit.\n");
+  zputs("Press SPACE to start, WASD to move, ESC to quit.\r\n");
   
   while (!running) {
     seed ++;
@@ -141,7 +141,7 @@ int main() {
   srand(seed);
 
   new_apple();
-  zputs("\"How do ya like dem apples?\"\n");
+  zputs("\"How do ya like dem apples?\"\r\n");
 
   while (running) {
     tms_wait();
@@ -173,7 +173,7 @@ int main() {
 
       if (move_snake(snake)) {
         running = false;
-        zputs("You crashed into a wall.\n");
+        zputs("You crashed into a wall.\r\n");
         break;
       }
 
@@ -183,7 +183,7 @@ int main() {
           snake->grow = 4;
           new_apple();
         } else {
-          zputs("You crashed into your tail.\n");
+          zputs("You crashed into your tail.\r\n");
           running = false;
         }
       }

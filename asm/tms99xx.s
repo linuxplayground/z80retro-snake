@@ -32,6 +32,10 @@ tms_put:
   pop   hl
   push  hl
   pop   hl
+  push  hl
+  pop   hl
+  push  hl
+  pop   hl
   ret
 
 ;===============================================================================
@@ -183,7 +187,7 @@ _tms_flushmc:
   ld    de,tms_pat
   ld    bc,tms_patLen
 
-  ;call tms_wait
+  call  _tms_wait
   call  tms_wr_fast
   pop   bc
   ret
