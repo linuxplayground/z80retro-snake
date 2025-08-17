@@ -3,9 +3,10 @@
 
 /*
  * Helper functions for serial input / output
+ *
+ * Print a null terminated string to the serial console.  
+ * Uses `chout` from `sio.h`.
  */
-
-// Print a null terminated string
 void zputs(char *s);
 
 #endif //_ZTTY_H
