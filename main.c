@@ -30,7 +30,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define SPEED   2   // How fast the snake move.  2 is quite fast, 3 is more sedate
+#define SPEED   3   // How fast the snake move.  2 is quite fast, 3 is more sedate
 #define GROWLEN 4   // How many segments does the snake grow by when it eats an apple
 
 enum e_dir { NORTH, EAST, SOUTH, WEST };
