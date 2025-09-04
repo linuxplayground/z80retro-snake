@@ -209,7 +209,7 @@ _tms_wait:
 ; Multicolor Mode Registers
 ;===============================================================================
 tms_initmcregs:
-  .byte 0x00,0x80       ; Graphics mode 1, no external video
+  .byte 0x00,0x80       ; Graphics mode mc, no external video
   .byte 0xe8,0x81       ; 16K,enable display, enable int, 16x16 sprites
   .byte 0x05,0x82       ; R2 = name table = 0x1400
   .byte 0x00,0x83       ; R3 = color table = NOT USED

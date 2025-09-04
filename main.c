@@ -25,6 +25,7 @@
 #include "tms99xx.h"
 #include "vdp.h"
 #include "ztty.h"
+#include "cpm.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -205,10 +206,8 @@ int main() {
   // pseudo random number generator.
   while (!running) {
     seed ++;
-    if (cstat()) {
-      if(chin() == ' ')
-        running = true;
-    }
+    if(conio() == ' ')
+      running = true;
   }
   srand(seed);
 
@@ -226,27 +225,25 @@ int main() {
     speed--;
 
     // We don't allow changing direction back on ourselves.
-    if (cstat()) {  // a key was pressed
-      key = chin(); // get the key
-      switch (key) {
-      case 0x1b:
-        running = false;
-        break;
-      case 'a':
-        dir = (dir != EAST) ? WEST : dir;
-        break;
-      case 's':
-        dir = (dir != NORTH) ? SOUTH : dir;
-        break;
-      case 'd':
-        dir = (dir != WEST) ? EAST : dir;
-        break;
-      case 'w':
-        dir = (dir != SOUTH) ? NORTH : dir;
-        break;
-      default:
-        break;
-      }
+    key = conio(); // get the key
+    switch (key) {
+    case 0x1b:
+      running = false;
+      break;
+    case 'a':
+      dir = (dir != EAST) ? WEST : dir;
+      break;
+    case 's':
+      dir = (dir != NORTH) ? SOUTH : dir;
+      break;
+    case 'd':
+      dir = (dir != WEST) ? EAST : dir;
+      break;
+    case 'w':
+      dir = (dir != SOUTH) ? NORTH : dir;
+      break;
+    default:
+      break;
     }
     if (speed == 0 && running) {// Only update the game when the speed counter
                                 // reaches zero
