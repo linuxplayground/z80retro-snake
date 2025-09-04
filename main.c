@@ -20,8 +20,6 @@
  * SOFTWARE.
  */
 
-#include "rand.h"
-#include "sio.h"
 #include "tms99xx.h"
 #include "vdp.h"
 #include "ztty.h"
