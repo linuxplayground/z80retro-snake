@@ -1,5 +1,14 @@
+  .export _conout
   .export _conio
   .code
+_conout:
+  push  bc
+  ld    c,2
+  ex    de,hl
+  call  5
+  pop   bc
+  ret
+
 _conio:
   push  bc
   ld    c,6

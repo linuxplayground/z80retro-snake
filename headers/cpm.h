@@ -10,6 +10,7 @@
  * Zero if no char waiting
  */
 extern char conio();
+extern void conout(char c);
 
 #endif //_SIO_H
 
