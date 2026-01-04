@@ -24,6 +24,7 @@
 #include "vdp.h"
 #include "ztty.h"
 #include "cpm.h"
+#include "rand.h"
 
 #include <stdbool.h>
 #include <stdint.h>
